@@ -20,7 +20,7 @@ print c.fetchone()[1]
 #c.execute('INSERT INTO users VALUES (?,?)', user)
 
 name = ('guanqunmao@me.com',)
-c.execute('DELETE FROM users WHERE email=?', name)
+#c.execute('DELETE FROM users WHERE email=?', name)
 #print c.fetchone()
 
 conn.commit()

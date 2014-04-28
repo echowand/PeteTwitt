@@ -29,8 +29,7 @@
 
 http://data.cs.purdue.edu:<port>/PeteTwitt/login.cgi
 
-Users:
-
+Users: (email)
+ 
 george@gmail.com abc123
 mary@gmail.com mary123
-maggie  123               ########### new user #######

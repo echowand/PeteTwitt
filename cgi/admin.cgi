@@ -13,6 +13,11 @@ import admin
 # Required header that tells the browser how to render the HTML.
 print("Content-Type: text/html\n\n")
 
+MYLOGIN=getpass.getuser()
+DATABASE="/homes/"+MYLOGIN+"/PeteTwitt/picture_share.db"
+IMAGEPATH="/homes/"+MYLOGIN+"/PeteTwitt/images"
+HOMEPATH="/homes/"+MYLOGIN+"/PeteTwitt"
+
 def delete_user(form) :
     user = form['user'].value
     user_id=form['user_id'].value

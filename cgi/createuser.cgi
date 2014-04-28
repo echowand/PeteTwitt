@@ -11,7 +11,6 @@ from email.mime.text import MIMEText
 
 # Required header that tells the browser how to render the HTML.
 print "Content-Type: text/html\n\n"
-#host="http://data.cs.purdue.edu:4321/PictureShareDB/PictureShare"
 host="http://data.cs.purdue.edu:7111/PeteTwitt"
 
 MYLOGIN=getpass.getuser()
@@ -53,7 +52,7 @@ def generate_form():
 def display_data(username, password):
 
     create_user_dir(username)
-    sendemail(username,password)
+    #sendemail(username,password)
     activate(username,password)
     str="""
     <html>
@@ -79,21 +78,6 @@ def create_user_dir(username):
     if not os.path.exists(filename2):
         os.makedirs(filename2)
 
-def sendemail(username,password):
-    ############# escapse character is critical in py ############################
-    body = "Please click the following link to activate your account for CS390 PictureShare.\n\n"  \
-    + host+"/activate.cgi?action=activate&username="+username+"&password="+password
-
-    msg = MIMEText(body)
-    fromaddr = "maggie@purdue.edu"
-    toaddr = username
-    msg['Subject'] = 'Please verfy your account for PictureShare! '
-    msg['From'] = fromaddr
-    msg['To'] = toaddr
-    s = smtplib.SMTP("localhost")
-    s.set_debuglevel(1)
-    s.sendmail(fromaddr,[toaddr],msg.as_string())
-    s.quit()
 
 def activate(username,password):
     conn = sqlite3.connect(DATABASE)
@@ -102,7 +86,8 @@ def activate(username,password):
     user=(username, password)
     c.execute('INSERT INTO users VALUES (?,?)', user);
     conn.commit()
-        
+
+
 # Define main function.
 def main():
     form = cgi.FieldStorage()
