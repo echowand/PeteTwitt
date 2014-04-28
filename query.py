@@ -15,3 +15,12 @@ t = ('peter@gmail.com',)
 c.execute('SELECT * FROM users WHERE email=?', t)
 print c.fetchone()[1]
 
+
+#user=('guanqunmao@me.com', '123')
+#c.execute('INSERT INTO users VALUES (?,?)', user)
+
+name = ('guanqunmao@me.com',)
+c.execute('DELETE FROM users WHERE email=?', name)
+#print c.fetchone()
+
+conn.commit()

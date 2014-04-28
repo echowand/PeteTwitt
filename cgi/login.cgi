@@ -58,9 +58,9 @@ def check_password(user, passwd):
     conn.close();
 
     if row != None: 
-      stored_password=row[1]
-      if (stored_password==passwd):
-         return "passed"
+        stored_password=row[1]
+        if (stored_password==passwd):
+            return "passed"
 
     return "failed"
 
@@ -168,7 +168,7 @@ def upload_pic_data(form):
         open(IMAGEPATH+'/user1/test.jpg', 'wb').write(fileInfo.file.read())
         image_url="login.cgi?action=show_image&user={user}&session={session}".format(user=user,session=s)
         print_html_content_type()
-	print ('<H2>The picture ' + fileName + ' was uploaded successfully</H2>')
+        print ('<H2>The picture ' + fileName + ' was uploaded successfully</H2>')
         print('<image src="'+image_url+'">')
     else:
         message = 'No file was uploaded'
@@ -196,13 +196,13 @@ def main():
                    login_form()
                    print("<H3><font color=\"red\">Incorrect user/password</font></H3>")
         elif (action == "new-album"):
-	  new_album(form)
+            new_album(form)
         elif (action == "upload"):
-          upload(form)
+            upload(form)
         elif (action == "show_image"):
-          show_image(form)
+            show_image(form)
         elif action == "upload-pic-data":
-          upload_pic_data(form)
+            upload_pic_data(form)
         else:
             login_form()
     else:
