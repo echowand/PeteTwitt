@@ -1,0 +1,54 @@
+body {
+    font-family: Calibri;
+    background-color: #3366CC;
+}
+
+.main {
+    background-color: white;
+    width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 15px;
+    border: 5px solid black;
+    padding: 10px;
+}
+
+.login_box {
+    float: right;
+    width: 200px;
+    height: 150px;
+    background-color: #333CCC;
+    color: white;
+    text-align: center;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    border: 2px white solid;
+    
+}
+
+.banner h1 {
+    margin-left: 50px;
+    font-size: 3em;
+    color: black;
+}
+.login_box h1 {
+    font-size: 25px;
+}
+
+.login_box a {
+    color: white;
+    font-family: calibri;
+}
+
+footer {
+    margin: 20 0 0 0;
+    text-align: center;
+    height: 100px;
+}
+
+table {
+    
+}
+th {
+    text-align: left;
+}

@@ -1,0 +1,157 @@
+#!/usr/bin/python
+
+# Import the CGI, string, sys modules
+import cgi, string, sys, os, re, random, glob
+
+import cgitb; cgitb.enable()  # for troubleshooting
+import sqlite3
+# import the db library
+
+import login
+import session
+import admin
+
+# Required header that tells the browser how to render the HTML.
+print("Content-Type: text/html\n\n")
+
+
+
+
+database='picture_share.db'
+
+
+conn =  sqlite3.connect(database)
+c = conn.cursor()
+
+
+
+def home_page():
+
+    list = c.users_find()
+    print "<h3>Come check out others' pictures!<br/>Select any of the following member of our website</h3>"
+    print "<table>"
+    for row in list :
+	user=row[0]
+        html = "<tr>"
+        html +="<td><a href='main.cgi?action=albums_of_user&user="+user+"'>" + user +"</a></td>"
+	html +="</tr>"
+	print(html.format(user=user))
+
+    print "</table>"
+
+    
+
+
+def albums_of_user(user) :
+    list = c.execute("SELECT user_id FROM users WHERE username='"+user+"'")
+    conn.commit()
+    row = list.fetchone()
+    user_id = row[0]
+
+
+
+    list = c.execute("SELECT album FROM albums WHERE user_id="+str(user_id)+" AND public="+str(1))
+    conn.commit()
+
+    print "<table><tr><th>Public Albums of "+user+"</th></tr>"
+    for row in list :
+	album = row[0]
+        html = "<tr>"
+        html += "<td><a href='main.cgi?action=album_gallery&user={user}&album={album}'>" + album +"</a></td>"
+        html += "</tr>"
+	print(html.format(user=user,album=album))
+    print "</table>"
+
+
+
+
+
+def album_gallery(form) :
+    user = form['user'].value
+    album = form['album'].value
+    
+    print '<H1>%s:%s</H1>' % (user,album)
+    print "<a href='main.cgi?action=albums_of_user&user="+form['user'].value+"'>Go back to the album</a>"
+    #Read all pictures
+    dir="users/"+user+"/albums/"+album+"/*"
+    pics=glob.glob(dir)
+    
+    #for pic in pics:
+    #	print '<img src="%s">' % pic
+
+    
+    #sys.exit()
+    
+    # Print pictures in a table
+    
+    print """
+    <center><table border="0">
+    """
+    pics_in_row=0
+    for pic in pics:
+    
+	# Check if we need to start a new row
+	if pics_in_row == 0:
+	    print "<tr>"
+    
+	print "<td>"
+	print '<a href="%s">' % pic
+	print '<img src="%s" width="100" height="100"><p>' % pic
+	print '</a>'
+	print "</td>"
+	pics_in_row = pics_in_row + 1
+    
+	if pics_in_row == 5:
+	    print "</tr>"
+	    pics_in_row = 0
+    
+    #Close row if it is not closed
+    if pics_in_row > 0:
+	    print "</tr>"
+    
+    
+    print "</table></center>"
+    
+    print """
+    </body>
+    </html>
+    """
+
+def main():
+    form = cgi.FieldStorage()
+    main = "home_page"
+    user =""
+    if "action" in form:
+	action=form["action"].value
+	if action == "albums_of_user":
+	    main = "albums_of_user"
+	elif action == "album_gallery" :
+	    main = "album_gallery"
+                        
+    print """<html>
+	    <head>
+		<title>CS390 : PictureShare</title>
+	    </head>
+	    <body>
+                <h1> CS390 Picture Share </h1>
+		<h2>Login</h2>
+			<a href="login.cgi"> Login</a>
+                        <br/>
+			<a href="createuser.cgi"> Register </a>
+"""
+    if main == "home_page" :
+        home_page()
+    elif main == "albums_of_user" :
+        albums_of_user(form['user'].value)
+    elif main == "album_gallery" :
+        album_gallery(form)
+    
+    
+    
+    print """
+		    CS390 : Python <br/>Created by HongYuan Wang, Yibo Ma, ChenYang Qu
+	</html>
+	"""
+    
+    
+main()

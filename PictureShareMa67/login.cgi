@@ -1,0 +1,52 @@
+#!/usr/bin/python
+
+# Import the CGI, string, sys modules
+import cgi, string, sys, os, re, random
+
+import cgitb; cgitb.enable()  # for troubleshooting
+import sqlite3
+import login
+import session
+import albums
+import admin
+
+
+# Required header that tells the browser how to render the HTML.
+print("Content-Type: text/html\n\n")
+
+
+
+database='picture_share.db'
+
+
+conn =  sqlite3.connect(database)
+c = conn.cursor()
+
+# Define main function.
+def main():
+	#try:
+        form = cgi.FieldStorage()
+        if "action" in form:
+            action=form["action"].value
+            if action == "login":
+                if "username" in form and "password" in form:
+                    #Test password
+                    username=form["username"].value
+                    password=form["password"].value
+                    if login.check_password(username, password)=="passed":
+			session_var = session.create_session(username)
+			list = c.execute("SELECT user_id FROM users WHERE username='"+username+"'")
+			row = list.fetchone()
+			user_id=row[0]
+			list = c.execute("SELECT user_id FROM users WHERE username='"+username+"'")
+			temp= list.fetchone()
+			user_id = temp[0]
+			admin.display_admin_options(username, user_id, session_var)
+			
+                    else:
+                        print("<p><font color=\"red\">Incorrect username/password</font></p>")
+                        login.login_form()
+        else:
+            login.login_form()
+
+main()

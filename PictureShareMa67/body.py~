@@ -1,0 +1,93 @@
+#!/usr/bin/python
+
+# Import the CGI, string, sys modules
+import cgi, string, sys, os, re, random
+
+import cgitb; cgitb.enable()  # for troubleshooting
+
+# import the db library
+import db
+import login
+import session
+import admin
+
+database='picture_share.db'
+conn =  sqlite3.connect(database)
+c = conn.cursor()
+
+
+
+def home_page():
+
+    list = database.users_find()
+    print "<table><tr><th>Users</th></tr>"
+    
+    for row in list :
+        print "<tr>"
+        print "<td>" + row[0] +"</td>"
+        print "</tr>"
+    print "</table>"
+
+
+def album_of_user(user_id) :
+    list = c.execute("SELECT album FROM albums WHERE user_id="+str(user_id)+" AND public="+str(1))
+    conn.commit()
+
+
+    print "<table><tr><th>Public Albums of "+user+"</th></tr>"
+    for row in list :
+        print "<tr>"
+        print "<td>" + row[0] +"</td>"
+        print "</tr>"
+    print "</table>"
+
+def gallery(form) :
+    user = form['user'].value
+    album = form['album'].value
+    
+    print '<center><H1>%s:%s</H1></center>' % (user,album)
+    
+    #Read all pictures
+    dir="users/"+user+"/albums/"+album+"/*"
+    pics=glob.glob(dir)
+    
+    #for pic in pics:
+    #	print '<img src="%s">' % pic
+    #	print "<p>"
+    
+    #sys.exit()
+    
+    # Print pictures in a table
+    
+    print """
+    <table border="0">
+    """
+    pics_in_row=0
+    for pic in pics:
+    
+	# Check if we need to start a new row
+	if pics_in_row == 0:
+	    print "<tr>"
+    
+	print "<td>"
+	print '<a href="%s">' % pic
+	print '<img src="%s" width="100" height="100"><p>' % pic
+	print '</a>'
+	print "</td>"
+	pics_in_row = pics_in_row + 1
+    
+	if pics_in_row == 5:
+	    print "</tr>"
+	    pics_in_row = 0
+    
+    #Close row if it is not closed
+    if pics_in_row > 0:
+	    print "</tr>"
+    
+    
+    print "</table>"
+    
+    print """
+    </body>
+    </html>
+    """
