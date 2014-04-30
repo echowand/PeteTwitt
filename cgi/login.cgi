@@ -6,12 +6,117 @@ import cgitb; cgitb.enable()  # for troubleshooting
 import sqlite3
 import session
 import getpass
+import smtplib
+
+from email.mime.text import MIMEText
+
 
 #Get Databasedir
 #MYLOGIN="maog"
+#print "Content-Type: text/html\n\n"
+
 MYLOGIN=getpass.getuser()
+portNum = "7111"
+# print MYLOGIN
+if MYLOGIN == "jin75":
+    portNum = "61111"
+
+
+host="http://data.cs.purdue.edu:"+portNum+"/PeteTwitt"
 DATABASE="/homes/"+MYLOGIN+"/PeteTwitt/picture_share.db"
 IMAGEPATH="/homes/"+MYLOGIN+"/PeteTwitt/images"
+HOMEPATH="/homes/"+MYLOGIN+"/PeteTwitt"
+
+
+#############################################################
+# Define function to generate HTML form.
+def generate_form():
+    str = """
+<HTML>
+<HEAD>
+<TITLE>Info Form</TITLE>
+</HEAD>
+
+<BODY BGCOLOR = white>
+
+<center><H2>Create New Account</H2></center>
+
+<H3>Please enter your username and password.</H3>
+
+<TABLE BORDER = 0>
+<FORM METHOD = post ACTION = "createuser.cgi">
+<TR><TH>Email Address:</TH><TD><INPUT type = text  name = "username"></TD><TR>
+<TR><TH>Password:</TH><TD><INPUT type = password name ="password"></TD></TR>
+</TABLE>
+
+<INPUT TYPE = hidden NAME = "action" VALUE = "display">
+<INPUT TYPE = submit VALUE = "Enter">
+</FORM>
+</BODY>
+</HTML>
+"""
+    print_html_content_type()
+    print(str)
+
+
+
+# Define function create user.
+def display_data(username, password):
+
+    create_user_dir(username)
+    #sendemail(username,password)
+    activate(username,password)
+    str="""
+    <html>
+    <head>
+    <script type="text/javascript">
+
+    </script>
+    </head>
+    <body>
+    <h2>Account Created</h2>
+    <p>%s is created. You need check your email to activate your account.<p>
+    
+    </body>
+    </html>"""
+    print_html_content_type()
+    print(str % (username))
+
+
+def create_user_dir(username):
+    filename = HOMEPATH + "/users/" + username
+    if not os.path.exists(filename):
+        os.makedirs(filename)
+    filename2 = HOMEPATH +  "/users/" + username + "/albums"
+    if not os.path.exists(filename2):
+        os.makedirs(filename2)
+
+
+def activate(username,password):
+    conn = sqlite3.connect(DATABASE)
+    c = conn.cursor()
+
+    user=(username, password)
+    c.execute('INSERT INTO users VALUES (?,?)', user);
+    conn.commit()
+
+
+# Define main function.
+def mcall():
+    form = cgi.FieldStorage()
+    if (form.has_key("action") and form.has_key("username") and form.has_key("password")):
+        if (form["action"].value == "display"):
+            conn = sqlite3.connect(DATABASE)
+            c = conn.cursor()
+            t = (form["username"].value,)
+            c.execute('SELECT * FROM users WHERE email=?', t)
+            if(c.fetchone()):
+                generate_form()
+                print("<H3><font color=\"red\">User Name Exists! </font></H3>")
+            else:
+                display_data(form["username"].value, form["password"].value)
+    else:
+        generate_form()
 
 ##############################################################
 # Define function to generate login HTML form.
@@ -36,6 +141,7 @@ def login_form():
 
 <INPUT TYPE=hidden NAME="action" VALUE="login">
 <INPUT TYPE=submit VALUE="Enter">
+<INPUT TYPE=submit NAME="register" VALUE="register">
 </FORM>
 </BODY>
 </HTML>
@@ -181,7 +287,9 @@ def print_html_content_type():
 # Define main function.
 def main():
     form = cgi.FieldStorage()
-    if "action" in form:
+    if "register" in form:
+        mcall()
+    elif "action" in form:
         action=form["action"].value
         #print("action=",action)
         if action == "login":

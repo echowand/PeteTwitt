@@ -89,7 +89,7 @@ def activate(username,password):
 
 
 # Define main function.
-def main():
+def maincall():
     form = cgi.FieldStorage()
     if (form.has_key("action") and form.has_key("username") and form.has_key("password")):
         if (form["action"].value == "display"):
@@ -106,4 +106,3 @@ def main():
         generate_form()
 
 # Call main function.
-main()
