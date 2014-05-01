@@ -1,0 +1,72 @@
+<html>
+<head>
+<title>PeteTwitt</title>
+<meta http-equiv="refresh" content="30">
+</head>
+
+<body BGCOLOR = white>
+
+
+<h2>
+<img width="50" height="50" src="images/user1/test.jpg">
+USER
+</h2>
+
+<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Tweets</a>
+<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Following</a>
+<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Followers</a>
+<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Search</a>
+<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Profile</a>
+<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Logout</a>
+
+<br><br>
+<hr>
+<br>
+
+
+
+<form ACTION="login.cgi" METHOD="POST" enctype="multipart/form-data">
+            <input type="hidden" name="user" value="{user}">
+            <input type="hidden" name="session" value="{session}">
+            <input type="hidden" name="action" value="upload-pic-data">
+            <BR>Choose From Computer:<INPUT TYPE="FILE" NAME="file">
+            <br>Upload Avatar: 
+            <input type="submit" value="Open"> 
+            </form>
+
+
+<br>
+
+<h3>
+<img height="200" width="200" src="images/user1/test.jpg">
+
+<br>
+Login
+<br>
+Email
+
+
+<form action="pete_twitt.cgi" method="POST">
+<input type="hidden" name="user" value="mm">
+<input type="hidden" name="session" value="YJXS8FWUK2H3TGZ90VQM">
+
+<input type="text" size="50" name="displayName" id="displayName" placeholder="Enter Name" >
+<br>
+<input type="password" size="50" name="password" id="password" placeholder="Enter Password" >
+<br>
+<input type="text" size="50" name="description" id="description" placeholder="Hehe" value="Hehe">
+<br>
+
+<input type="hidden" name="action" value="reply">
+<input type="hidden" name="tweetid" value="64">
+
+<input type="submit" value="Submit">
+</form>
+
+
+
+</h3>
+
+
+</body>
+</html>

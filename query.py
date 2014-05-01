@@ -6,7 +6,7 @@ c = conn.cursor()
 
 print
 print 'Print all users'
-for row in c.execute('SELECT * FROM tweets'):
+for row in c.execute('SELECT * FROM users'):
   print row
 
 #print
