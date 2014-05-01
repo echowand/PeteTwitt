@@ -50,7 +50,7 @@ def generate_form():
 <TR><TH>Password:</TH><TD><INPUT type = password name ="password"></TD></TR>
 </TABLE>
 
-<INPUT TYPE = hidden NAME = "submitReg" VALUE = "display">
+<INPUT TYPE = hidden NAME = "action" VALUE = "registerSub">
 <INPUT TYPE = submit VALUE = "Enter">
 </FORM>
 </BODY>
@@ -129,8 +129,9 @@ def login_form():
 
 <INPUT TYPE=hidden NAME="action" VALUE="login">
 <INPUT TYPE=submit VALUE="Enter">
-<INPUT TYPE=submit NAME="register" VALUE="register">
 </FORM>
+<INPUT TYPE=submit VALUE="Create account"
+    onclick="window.location='login.cgi?action=register';"/>
 </BODY>
 </HTML>
 """
@@ -271,27 +272,28 @@ def print_html_content_type():
 	# Required header that tells the browser how to render the HTML.
 	print("Content-Type: text/html\n\n")
 
+#############################################################
+
+
+def register_new(form):
+    if "username" in form and "password" in form:
+        conn = sqlite3.connect(DATABASE)
+        c = conn.cursor()
+        t = (form["username"].value,)
+        c.execute('SELECT * FROM users WHERE email=?', t)
+        if(c.fetchone()):
+            generate_form()
+            print("<H3><font color=\"red\">User Name Exists! </font></H3>")
+        else:
+            display_data(form["username"].value, form["password"].value)
+    else:
+        login_form()
+
 ##############################################################
 # Define main function.
 def main():
     form = cgi.FieldStorage()
-    if "register" in form and form["register"].value=="register":
-        generate_form()
-    elif "submitReg" in form and form.has_key("username") and form.has_key("password"):
-        if (form["submitReg"].value == "display"):
-            conn = sqlite3.connect(DATABASE)
-            c = conn.cursor()
-            t = (form["username"].value,)
-            c.execute('SELECT * FROM users WHERE email=?', t)
-            if(c.fetchone()):
-                generate_form()
-                print("<H3><font color=\"red\">User Name Exists! </font></H3>")
-            else:
-                display_data(form["username"].value, form["password"].value)
-                
-        else: 
-            login_form()
-    elif "action" in form:
+    if "action" in form:
         action=form["action"].value
         #print("action=",action)
         if action == "login":
@@ -305,6 +307,10 @@ def main():
                 else:
                    login_form()
                    print("<H3><font color=\"red\">Incorrect user/password</font></H3>")
+        elif action == "register":
+            generate_form()
+        elif action == "registerSub":
+            register_new(form)
         elif (action == "new-album"):
             new_album(form)
         elif (action == "upload"):
