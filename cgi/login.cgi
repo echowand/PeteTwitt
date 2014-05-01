@@ -49,12 +49,12 @@ def display_admin_options(user, session):
 USER
 </h2>
 
-<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Tweets</a>
-<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Following</a>
-<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Followers</a>
-<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Search</a>
-<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Profile</a>
-<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Logout</a>
+<a href="login.cgi?action=admin&user={user}&session={session}">Tweets</a>
+<a href="login.cgi?action=Following&user={user}&session={session}">Following</a>
+<a href="login.cgi?action=Followers&user={user}&session={session}">Followers</a>
+<a href="login.cgi?action=Search&user={user}&session={session}">Search</a>
+<a href="login.cgi?action=Profile&user={user}&session={session}">Profile</a>
+<a href="login.cgi?action=Logout&user={user}&session={session}">Logout</a>
 
 <br><br>
 <hr>
@@ -345,6 +345,16 @@ def register_new(form):
     else:
         login_form()
 
+
+def logoutUser(form):
+    session.delete_session(form["user"].value)
+    print_html_content_type()
+    print("<H3><font color=\"black\">Successfully Loged out! </font></H3>\n\n")
+    jump = """
+    <meta http-equiv="refresh" content="5; url=login.cgi" />
+    """
+    print(jump)
+
 ##############################################################
 # Define main function.
 def main():
@@ -371,7 +381,7 @@ def main():
         elif action == "register":
             generate_form()
         elif action == "admin":
-            display_admin_options(form["user"], form["session"])
+            display_admin_options(form["user"].value, form["session"].value)
         elif action == "registerSub":
             register_new(form)
         elif (action == "new-album"):
@@ -382,6 +392,8 @@ def main():
             show_image(form)
         elif action == "upload-pic-data":
             upload_pic_data(form)
+        elif action == "Logout":
+            logoutUser(form)
         else:
             login_form()
     else:

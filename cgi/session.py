@@ -66,3 +66,13 @@ def read_session_string(user):
 
     return row[1]
 
+
+def delete_session(user):
+    conn = sqlite3.connect(DATABASE)
+    c = conn.cursor()
+
+    # Try to get old session
+    t = (user,)
+    c.execute('DELETE FROM sessions WHERE user=?', t)
+    conn.close()
+        
