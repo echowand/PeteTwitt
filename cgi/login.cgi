@@ -344,6 +344,8 @@ def register_new(form):
             display_data(form["email"].value, form["password"].value, form["inputLogin"].value, form["displayName"].value)
     else:
         login_form()
+#############################################################
+# log out user
 
 
 def logoutUser(form):
@@ -354,6 +356,45 @@ def logoutUser(form):
     <meta http-equiv="refresh" content="5; url=login.cgi" />
     """
     print(jump)
+##############################################################
+# Search function
+# def search_user(form):
+#     conn = sqlite3.connect(DATABASE)
+#     c = conn.cursor()
+
+#     user=(form["user"].value)
+#     c.execute('SELECT * FROM users');
+#     rows = c.fetchall()
+#     conn.close()
+#     for row in rows:
+#         if user in row[3]
+        # :
+
+##############################################################
+def generate_search(form):
+    html = """
+<html>
+      <head>
+          <title>Search</title>
+      </head>
+      <body bgcolor="white">
+          <h3 style="text-align: center">Search Users</h3>
+          <div align="center">
+              <a href="login.cgi?username={user}&session={session}&action=admin">
+                <img align="middle" src="http://i.imgur.com/vQUGoAu.jpg" alt=""  width="700" height="450">
+              </a>
+          </div>
+          <form style="text-align: center" action="login.cgi" method=POST>
+            <input type=hidden name="user" value={user}>
+            <input type=hidden name="session" value={session}>
+            <input type=text size=50 name=query>
+            <input type=submit value="search">
+          </form>
+      
+  </body></html>
+    """
+    print_html_content_type()
+    print(html.format(user=form["user"].value, session=form["session"].value))
 
 ##############################################################
 # Define main function.
@@ -394,6 +435,9 @@ def main():
             upload_pic_data(form)
         elif action == "Logout":
             logoutUser(form)
+        elif action == "Search":
+            generate_search(form)
+            
         else:
             login_form()
     else:
