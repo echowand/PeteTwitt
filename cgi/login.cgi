@@ -29,6 +29,76 @@ IMAGEPATH="/homes/"+MYLOGIN+"/PeteTwitt/images"
 HOMEPATH="/homes/"+MYLOGIN+"/PeteTwitt"
 
 
+    
+
+#############################################################
+#Main view
+def display_admin_options(user, session):
+    html= """
+<html>
+<head>
+<title>PeteTwitt</title>
+<meta http-equiv="refresh" content="30">
+</head>
+
+<body BGCOLOR = white>
+
+
+<h2>
+<image width="50" height="50" src="images/user1/test.jpg">
+USER
+</h2>
+
+<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Tweets</a>
+<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Following</a>
+<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Followers</a>
+<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Search</a>
+<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Profile</a>
+<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Logout</a>
+
+<br><br>
+<hr>
+<br>
+
+
+<form ACTION="login.cgi" METHOD="POST" enctype="multipart/form-data">
+<input size="50" maxlength="140" type="text" name="message">
+<br>
+<input type="hidden" value="ac72d082a0a7e941acc70599b98c0bcd" name="sid">
+<input type="hidden" name="user" value="{user}">
+<input type="hidden" name="session" value="{session}">
+<input type="hidden" name="action" value="upload-pic-data">
+<input TYPE="FILE" NAME="file">
+<input type="submit" value="Tweet">
+</form>
+<br>
+
+
+
+<h3>
+<img height="50" width="50" src="images/user1/test.jpg">
+ma70: Hello World! [Wed, 23 Apr 2014 17:31:15] 
+
+<form action="pete_twitt.cgi" method="POST">
+<input type="hidden" name="user" value="mm">
+<input type="hidden" name="session" value="YJXS8FWUK2H3TGZ90VQM">
+<input type="hidden" name="action" value="reply">
+<input type="hidden" name="tweetid" value="64">
+<input type="text" size="50" name="reply">
+<input type="submit" value="Reply">
+</form>
+
+
+
+</h3>
+
+
+</body>
+</html>
+    """
+    print_html_content_type()
+    print(html.format(user=user,session=session))
+
 #############################################################
 # Define function to generate HTML form.
 def generate_form():
@@ -163,28 +233,7 @@ def check_password(user, passwd):
 
     return "failed"
 
-##########################################################
-# Diplay the options of admin
-def display_admin_options(user, session):
-    html="""
-        <H1> Picture Share Admin Options</H1>
-        <ul>
-        <li> <a href="login.cgi?action=new-album&user={user}&session={session}">Create new album</a>
-        <li> <a href="login.cgi?action=upload&user={user}&session={session}">Upload Picture</a>
-        <li> <a href="login.cgi?action=show_image&user={user}&session={session}">Show Image</a>
-        <li> Delete album
-        <li> Make album public
-        <li> Change pasword
-        </ul>
-        """
-        #Also set a session number in a hidden field so the
-        #cgi can check that the user has been authenticated
-    
 
-    
-    print_html_content_type()
-    
-    print(html.format(user=user,session=session))
 
 #################################################################
 def create_new_session(user):
@@ -277,7 +326,7 @@ def upload_pic_data(form):
 
 def print_html_content_type():
 	# Required header that tells the browser how to render the HTML.
-	print("Content-Type: text/html\n\n")
+	print("Content-Type: text/html; image/jpg\n\n")
 
 #############################################################
 
