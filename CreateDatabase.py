@@ -11,11 +11,11 @@ c.execute("PRAGMA foreign_keys = ON")
 # Create users table, 
 c.execute('''CREATE TABLE users
 	     (login TEXT NOT NULL,
-              email TEXT NOT NULL, 
-              displayName TEXT NOT NULL,
-              password TEXT NOT NULL,
-              activated TEXT NOT NULL,
-              description TEXT NOT NULL,
+          email TEXT NOT NULL, 
+          displayName TEXT NOT NULL,
+          password TEXT NOT NULL,
+          activated TEXT NOT NULL,
+          description TEXT NOT NULL,
 	      PRIMARY KEY(email, login))''')
 
 # Create table avatars
@@ -28,8 +28,8 @@ c.execute('''CREATE TABLE avatars
 # Create pictures table
 c.execute('''CREATE TABLE pictures
 	      (picID INGEGER NOT NULL,
-              login TEXT NOT NULL,
-              path TEXT NOT NULL,
+          login TEXT NOT NULL,
+          path TEXT NOT NULL,
 	      FOREIGN KEY(login) REFERENCES users(login),
 	      PRIMARY KEY(path, picID))''')
 
@@ -43,7 +43,8 @@ c.execute('''CREATE TABLE sessions
 # Create follows table
 c.execute('''CREATE TABLE follows
           (followerLogin TEXT NOT NULL,
-           followingLogin TEXT NOT NULL
+           followingLogin TEXT NOT NULL,
+           PRIMARY KEY(followerLogin, followingLogin)
           )''')
 
 
