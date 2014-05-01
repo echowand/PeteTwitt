@@ -45,7 +45,7 @@ def display_admin_options(user, session):
 
 
 <h2>
-<image width="50" height="50" src="images/user1/test.jpg">
+<img width="50" height="50" src="images/user1/test.jpg">
 USER
 </h2>
 
