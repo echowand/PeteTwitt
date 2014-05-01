@@ -8,29 +8,30 @@ c = conn.cursor()
 # Turn on foreign key support
 c.execute("PRAGMA foreign_keys = ON")
 
-# Create users table
+# Create users table, 
 c.execute('''CREATE TABLE users
-	     (email TEXT NOT NULL, 
-	      password TEXT NOT NULL,
-	      PRIMARY KEY(email))''')
+	     (login TEXT NOT NULL,
+              email TEXT NOT NULL, 
+              displayName TEXT NOT NULL,
+              password TEXT NOT NULL,
+              activated TEXT NOT NULL,
+              description TEXT NOT NULL,
+	      PRIMARY KEY(email, login))''')
 
-# Create album table
-# Visibility is 'public' or 'private'
-c.execute('''CREATE TABLE albums
-	     (name TEXT NOT NULL,
-	      owner TEXT NOT NULL,
-	      visibility TEXT NOT NULL,
-	      FOREIGN KEY (owner) REFERENCES users(email),
-	      PRIMARY KEY(name, owner))''')
+# Create table avatars
+c.execute('''CREATE TABLE avatars
+             (login TEXT NOT NULL,
+              path TEXT NOT NULL,
+              FOREIGN KEY(login) REFERENCES users(login),
+              PRIMARY KEY(path))''')
 
 # Create pictures table
 c.execute('''CREATE TABLE pictures
-	     (path TEXT NOT NULL,
-	      album TEXT NOT NULL,
-	      owner TEXT NOT NULL,
-	      FOREIGN KEY(album, owner) REFERENCES albums(name, owner),
-	      FOREIGN KEY(owner) REFERENCES users(email),
-	      PRIMARY KEY(path))''')
+	      (picID INGEGER NOT NULL,
+              login TEXT NOT NULL,
+              path TEXT NOT NULL,
+	      FOREIGN KEY(login) REFERENCES users(login),
+	      PRIMARY KEY(path, picID))''')
 
 # Create sessions table
 c.execute('''CREATE TABLE sessions
@@ -38,6 +39,25 @@ c.execute('''CREATE TABLE sessions
 	      session TEXT NOT NULL,
 	      FOREIGN KEY(user) REFERENCES users(email),
 	      PRIMARY KEY(session))''')
+
+# Create follows table
+c.execute('''CREATE TABLE follows
+          (followerLogin TEXT NOT NULL,
+           followingLogin TEXT NOT NULL
+          )''')
+
+
+# Create tweets table
+c.execute('''CREATE TABLE tweets
+          (tweetID INTEGER NOT NULL,
+           login TEXT NOT NULL,
+           content TEXT NOT NULL,
+           picID INTEGER NOT NULL,
+           timeStamp TEXT NOT NULL,
+           PRIMARY KEY(tweetID))''')
+           
+
+
 
 
 # Save the changes

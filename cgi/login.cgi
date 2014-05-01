@@ -46,8 +46,12 @@ def generate_form():
 
 <TABLE BORDER = 0>
 <FORM METHOD = post ACTION = "login.cgi">
-<TR><TH>Email Address:</TH><TD><INPUT type = text  name = "username"></TD><TR>
+<TR><TH>Login:</TH><TD><INPUT type = text  name = "inputLogin"></TD><TR>
+<TR><TH>Email Address:</TH><TD><INPUT type = text  name = "email"></TD><TR>
+<TR><TH>displayName:</TH><TD><INPUT type = text  name = "displayName"></TD><TR>
 <TR><TH>Password:</TH><TD><INPUT type = password name ="password"></TD></TR>
+
+
 </TABLE>
 
 <INPUT TYPE = hidden NAME = "action" VALUE = "registerSub">
@@ -62,11 +66,11 @@ def generate_form():
 
 
 # Define function create user.
-def display_data(username, password):
+def display_data(email, password, login, displayName):
 
-    create_user_dir(username)
+    create_user_dir(login)
     #sendemail(username,password)
-    activate(username,password)
+    activate(email,password, login, displayName)
     str="""
     <html>
     <head>
@@ -82,7 +86,7 @@ def display_data(username, password):
     </body>
     </html>"""
     print_html_content_type()
-    print(str % (username))
+    print(str % (email))
 
 
 def create_user_dir(username):
@@ -94,12 +98,12 @@ def create_user_dir(username):
         os.makedirs(filename2)
 
 
-def activate(username,password):
+def activate(username,password, login, displayName):
     conn = sqlite3.connect(DATABASE)
     c = conn.cursor()
 
-    user=(username, password)
-    c.execute('INSERT INTO users VALUES (?,?)', user);
+    user=(login, username, displayName, password,"true", "Nothing" )
+    c.execute('INSERT INTO users VALUES (?,?,?, ?, ?, ?)', user);
     conn.commit()
 
 
@@ -175,8 +179,11 @@ def display_admin_options(user, session):
         """
         #Also set a session number in a hidden field so the
         #cgi can check that the user has been authenticated
+    
 
+    
     print_html_content_type()
+    
     print(html.format(user=user,session=session))
 
 #################################################################
@@ -276,16 +283,16 @@ def print_html_content_type():
 
 
 def register_new(form):
-    if "username" in form and "password" in form:
+    if "email" in form and "password" in form and "inputLogin" in form and "displayName" in form:
         conn = sqlite3.connect(DATABASE)
         c = conn.cursor()
-        t = (form["username"].value,)
+        t = (form["email"].value,)
         c.execute('SELECT * FROM users WHERE email=?', t)
         if(c.fetchone()):
             generate_form()
-            print("<H3><font color=\"red\">User Name Exists! </font></H3>")
+            print("<H3><font color=\"red\">Email Exists! </font></H3>")
         else:
-            display_data(form["username"].value, form["password"].value)
+            display_data(form["email"].value, form["password"].value, form["inputLogin"].value, form["displayName"].value)
     else:
         login_form()
 
@@ -303,12 +310,19 @@ def main():
                 password=form["password"].value
                 if check_password(username, password)=="passed":
                    session=create_new_session(username)
-                   display_admin_options(username, session)
+                   fowardLink = """
+                   <meta http-equiv="refresh" content="0; url=login.cgi?action=admin&user={user}&session={session}" />
+                   """
+                   print_html_content_type()
+                   print(fowardLink.format(user=username, session=session))
+                   
                 else:
                    login_form()
                    print("<H3><font color=\"red\">Incorrect user/password</font></H3>")
         elif action == "register":
             generate_form()
+        elif action == "admin":
+            display_admin_options(form["user"], form["session"])
         elif action == "registerSub":
             register_new(form)
         elif (action == "new-album"):
