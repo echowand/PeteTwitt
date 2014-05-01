@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>PeteTwitt</title>
+<meta http-equiv="refresh" content="30">
+</head>
+
+<body BGCOLOR = white>
+
+
+<h2>
+<img width="50" height="50" src="images/user1/test.jpg">
+USER
+</h2>
+
+<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Tweets</a>
+<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Following</a>
+<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Followers</a>
+<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Search</a>
+<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Profile</a>
+<a href="changePic.cgi?sid=ac72d082a0a7e941acc70599b98c0bcd">Logout</a>
+
+<br><br>
+<hr>
+<br>
+
+
+<form ACTION="login.cgi" METHOD="POST" enctype="multipart/form-data">
+<input size="50" maxlength="140" type="text" name="message">
+<br>
+<input type="hidden" value="ac72d082a0a7e941acc70599b98c0bcd" name="sid">
+<input type="hidden" name="user" value="{user}">
+<input type="hidden" name="session" value="{session}">
+<input type="hidden" name="action" value="upload-pic-data">
+<input TYPE="FILE" NAME="file">
+<input type="submit" value="Tweet">
+</form>
+<br>
+
+
+
+<h3>
+<img height="50" width="50" src="images/user1/test.jpg">
+ma70: Hello World! [Wed, 23 Apr 2014 17:31:15] 
+
+<form action="pete_twitt.cgi" method="POST">
+<input type="hidden" name="user" value="mm">
+<input type="hidden" name="session" value="YJXS8FWUK2H3TGZ90VQM">
+<input type="hidden" name="action" value="reply">
+<input type="hidden" name="tweetid" value="64">
+<input type="text" size="50" name="reply">
+<input type="submit" value="Reply">
+</form>
+
+
+
+</h3>
+
+
+</body>
+</html>
