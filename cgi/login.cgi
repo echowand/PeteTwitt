@@ -7,6 +7,7 @@ import sqlite3
 import session
 import getpass
 import smtplib
+import admin
 
 from email.mime.text import MIMEText
 
@@ -44,12 +45,12 @@ def generate_form():
 <H3>Please enter your username and password.</H3>
 
 <TABLE BORDER = 0>
-<FORM METHOD = post ACTION = "createuser.cgi">
+<FORM METHOD = post ACTION = "login.cgi">
 <TR><TH>Email Address:</TH><TD><INPUT type = text  name = "username"></TD><TR>
 <TR><TH>Password:</TH><TD><INPUT type = password name ="password"></TD></TR>
 </TABLE>
 
-<INPUT TYPE = hidden NAME = "action" VALUE = "display">
+<INPUT TYPE = hidden NAME = "submitReg" VALUE = "display">
 <INPUT TYPE = submit VALUE = "Enter">
 </FORM>
 </BODY>
@@ -69,6 +70,7 @@ def display_data(username, password):
     str="""
     <html>
     <head>
+    <meta http-equiv="refresh" content="2; URL="www.google.com">
     <script type="text/javascript">
 
     </script>
@@ -102,21 +104,7 @@ def activate(username,password):
 
 
 # Define main function.
-def mcall():
-    form = cgi.FieldStorage()
-    if (form.has_key("action") and form.has_key("username") and form.has_key("password")):
-        if (form["action"].value == "display"):
-            conn = sqlite3.connect(DATABASE)
-            c = conn.cursor()
-            t = (form["username"].value,)
-            c.execute('SELECT * FROM users WHERE email=?', t)
-            if(c.fetchone()):
-                generate_form()
-                print("<H3><font color=\"red\">User Name Exists! </font></H3>")
-            else:
-                display_data(form["username"].value, form["password"].value)
-    else:
-        generate_form()
+        
 
 ##############################################################
 # Define function to generate login HTML form.
@@ -287,8 +275,22 @@ def print_html_content_type():
 # Define main function.
 def main():
     form = cgi.FieldStorage()
-    if "register" in form:
-        mcall()
+    if "register" in form and form["register"].value=="register":
+        generate_form()
+    elif "submitReg" in form and form.has_key("username") and form.has_key("password"):
+        if (form["submitReg"].value == "display"):
+            conn = sqlite3.connect(DATABASE)
+            c = conn.cursor()
+            t = (form["username"].value,)
+            c.execute('SELECT * FROM users WHERE email=?', t)
+            if(c.fetchone()):
+                generate_form()
+                print("<H3><font color=\"red\">User Name Exists! </font></H3>")
+            else:
+                display_data(form["username"].value, form["password"].value)
+                
+        else: 
+            login_form()
     elif "action" in form:
         action=form["action"].value
         #print("action=",action)
