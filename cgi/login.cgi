@@ -227,7 +227,7 @@ def check_password(user, passwd):
     conn.close();
 
     if row != None: 
-        stored_password=row[1]
+        stored_password=row[3]
         if (stored_password==passwd):
             return "passed"
 
@@ -357,18 +357,34 @@ def logoutUser(form):
     """
     print(jump)
 ##############################################################
-# Search function
-# def search_user(form):
-#     conn = sqlite3.connect(DATABASE)
-#     c = conn.cursor()
+#Search function
+def search_user(form):
+    print_html_content_type()
+    jump = """
+    <meta http-equiv="refresh" content="0; url=login.cgi?action=Search&user={user}&session={session}" />
+    """
+    # print(jump.format(user=form["user"].value, session=form["session"].value))
+    generate_search(form)
+    conn = sqlite3.connect(DATABASE)
+    c = conn.cursor()
 
-#     user=(form["user"].value)
-#     c.execute('SELECT * FROM users');
-#     rows = c.fetchall()
-#     conn.close()
-#     for row in rows:
-#         if user in row[3]
-        # :
+    user=(form["user"].value)
+    c.execute('SELECT * FROM users');
+    rows = c.fetchall()
+    conn.close()
+    user=form["user"].value
+    # html = "<h3>" + user +"</h3>" 
+    # print(html)
+    flag = 0
+    for row in rows:
+        if user in row[2]:
+            flag = 1
+            html = "<h3>"
+            html += row[2]
+            html += " "+"@"+row[0]+"</h3>"
+            print(html)
+    if flag == 0:
+        print(jump.format(user=form["user"].value, session=form["session"].value))
 
 ##############################################################
 def generate_search(form):
@@ -380,11 +396,11 @@ def generate_search(form):
       <body bgcolor="white">
           <h3 style="text-align: center">Search Users</h3>
           <div align="center">
-              <a href="login.cgi?username={user}&session={session}&action=admin">
+              <a href="login.cgi?action=admin&user={user}&session={session}">
                 <img align="middle" src="http://i.imgur.com/vQUGoAu.jpg" alt=""  width="700" height="450">
               </a>
           </div>
-          <form style="text-align: center" action="login.cgi" method=POST>
+          <form style="text-align: center" action="search.cgi" method=GET>
             <input type=hidden name="user" value={user}>
             <input type=hidden name="session" value={session}>
             <input type=text size=50 name=query>
@@ -393,7 +409,7 @@ def generate_search(form):
       
   </body></html>
     """
-    print_html_content_type()
+    
     print(html.format(user=form["user"].value, session=form["session"].value))
 
 ##############################################################
@@ -436,8 +452,10 @@ def main():
         elif action == "Logout":
             logoutUser(form)
         elif action == "Search":
+            print_html_content_type()
             generate_search(form)
-            
+        elif action == "submitSearch":
+            search_user(form)
         else:
             login_form()
     else:
